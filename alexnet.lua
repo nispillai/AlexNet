@@ -25,6 +25,21 @@ function buildAlexNet()
    torch.setdefaulttensortype('torch.FloatTensor')
 
    local cnn = nn.Sequential()
+   cnn:add(convLayer(3,96,11,11,4,4,2,2))
+   cnn:add(maxPool(3,3,2,2))
+   cnn:add(convLayer(96,256,5,5,1,1,2,2))
+   cnn:add(maxPool(3,3,2,2))
+   cnn:add(convLayer(256,384,3,3,1,1,1,1))
+   cnn:add(convLayer(384,384,3,3,1,1,1,1))
+   cnn:add(convLayer(384,256,3,3,1,1,1,1))
+   cnn:add(maxPool(3,3,2,2))
+   cnn:add(cuLinear(256*6*6,4086))
+   cnn:add(Drop(0.5))
+   cnn:add(cuLinear(4096,4096))
+   cnn:add(Drop(0.5))a
+   cnn:add(cuLinear(4096,1000)) 
+   cnn:add(lSMLayer)
+
    print(cnn)
    return cnn
 end
@@ -65,4 +80,3 @@ for i=1,#test_set do
    pred = cnn:forward(test_set.data[i])
    print(pred:exp())
 end
-
